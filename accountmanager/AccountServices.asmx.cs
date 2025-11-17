@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 //we need these to talk to mysql
 using MySql.Data;
@@ -21,11 +23,11 @@ namespace accountmanager
 	// To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
 	[System.Web.Script.Services.ScriptService]
 	public class AccountServices : System.Web.Services.WebService
-	{
+        {
 
-		[WebMethod]
-		public int NumberOfAccounts()
-		{
+                [WebMethod]
+                public int NumberOfAccounts()
+                {
 			//here we are grabbing that connection string from our web.config file
 			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 			//here's our query.  A basic select with nothing fancy.
@@ -46,8 +48,15 @@ namespace accountmanager
 			DataTable sqlDt = new DataTable();
 			//here we go filling it!
 			sqlDa.Fill(sqlDt);
-			//return the number of rows we have, that's how many accounts are in the system!
-			return sqlDt.Rows.Count;
-		}
-	}
+                        //return the number of rows we have, that's how many accounts are in the system!
+                        return sqlDt.Rows.Count;
+                }
+
+                [WebMethod]
+                public string FormatJsonForElementor(string json)
+                {
+                        JToken parsed = JToken.Parse(json);
+                        return parsed.ToString(Formatting.None);
+                }
+        }
 }
